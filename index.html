@@ -2,7 +2,7 @@
 <html>
 <head>
     <meta charset='utf-8' />
-    <title>Display a map</title>
+    <title>Bike packing routes</title>
     <meta name='viewport' content='initial-scale=1,maximum-scale=1,user-scalable=no' />
     <script src='https://api.tiles.mapbox.com/mapbox-gl-js/v0.44.2/mapbox-gl.js'></script>
     <link href='https://api.tiles.mapbox.com/mapbox-gl-js/v0.44.2/mapbox-gl.css' rel='stylesheet' />
@@ -24,10 +24,50 @@ var map = new mapboxgl.Map({
     container: 'map', // container id
     style: 'mapbox://styles/longskinneyline/cjg6egl6k0hp42sqv7z01vam2', // stylesheet location
     center: [149.175,-35.421], // starting position [lng, lat]
-    zoom: 9, // starting zoom
+    zoom: 7, // starting zoom
     minZoom: 10,
     maxBounds: bounds // Sets bounds as max
 });
+
+.marker {
+  background-image: url('mapbox-icon.png');
+  background-size: cover;
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  cursor: pointer;
+}
+
+
+var geojson = {
+  type: 'FeatureCollection',
+  features: [{
+    type: 'Feature',
+    geometry: {
+      type: 'Route marker',
+      coordinates: [149.109,-35.423]
+    },
+    properties: {
+      title: 'Route',
+      description: 'Orroral loop'
+    }
+  }]
+};
+
+// add markers to map
+geojson.features.forEach(function(marker) {
+
+  // create a HTML element for each feature
+  var el = document.createElement('div');
+  el.className = 'marker';
+
+  // make a marker for each feature and add to the map
+  new mapboxgl.Marker(el)
+  .setLngLat(marker.geometry.coordinates)
+  .addTo(map);
+});
+
+
 </script>
 
 </body>
