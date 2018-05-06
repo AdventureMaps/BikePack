@@ -17,6 +17,16 @@
             border-radius: 50%;
             cursor: pointer;
         }
+        .mapboxgl-popup {
+            max-width: 200px;
+        }
+
+        .mapboxgl-popup-content {
+            text-align: center;
+            font-family: 'Open Sans', sans-serif;
+        }
+
+
     </style>
 </head>
 <body>
@@ -62,8 +72,9 @@ geojson.features.forEach(function(marker) {
 
   // make a marker for each feature and add to the map
   new mapboxgl.Marker(el)
-  .setLngLat(marker.geometry.coordinates)
-  .addTo(map);
+    .setLngLat(marker.geometry.coordinates)
+    .setPopup(new mapboxgl.Popup({ offset: 25 }) // add popups
+    .addTo(map);
 });
 
 
