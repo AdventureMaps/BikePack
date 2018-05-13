@@ -2,83 +2,70 @@
 <html>
 <head>
     <meta charset='utf-8' />
-    <title>Bike packing routes</title>
+    <title>Display a map</title>
     <meta name='viewport' content='initial-scale=1,maximum-scale=1,user-scalable=no' />
     <script src='https://api.tiles.mapbox.com/mapbox-gl-js/v0.44.2/mapbox-gl.js'></script>
     <link href='https://api.tiles.mapbox.com/mapbox-gl-js/v0.44.2/mapbox-gl.css' rel='stylesheet' />
     <style>
         body { margin:0; padding:0; }
         #map { position:absolute; top:0; bottom:0; width:100%; }
-        .marker {
-            background-image: url('mapbox-icon.png');
-            background-size: cover;
-            width: 50px;
-            height: 50px;
-            border-radius: 50%;
-            cursor: pointer;
-        }
-        .mapboxgl-popup {
-            max-width: 200px;
-        }
-
-        .mapboxgl-popup-content {
-            text-align: center;
-            font-family: 'Open Sans', sans-serif;
-        }
-
-
     </style>
 </head>
+
 <body>
+<style>
+    #features {
+        position: absolute;
+		border: 1px solid black;
+        top: 0;
+        right: 0;
+        bottom: 0;
+        width: 400px;
+		height: 100px;
+        overflow: auto;
+        background: rgba(255, 255, 255, 0.8);
+    }
+	
+	#map canvas {
+		cursor: hand;
+	}
+</style>
 
 <div id='map'></div>
+<pre id='features'></pre>
 <script>
 mapboxgl.accessToken = 'pk.eyJ1IjoibG9uZ3NraW5uZXlsaW5lIiwiYSI6ImFxT19ENXcifQ.aLQ5J2zNOxr_oVaIOrxeow';
-var bounds = [
-    [148.142, -36.603], // Southwest coordinates
-    [151.053, -34.575]  // Northeast coordinates
-];
-var map = new mapboxgl.Map({
+var map = new mapboxgl.Map(
+{
     container: 'map', // container id
     style: 'mapbox://styles/longskinneyline/cjg6egl6k0hp42sqv7z01vam2', // stylesheet location
     center: [149.175,-35.421], // starting position [lng, lat]
-    zoom: 7, // starting zoom
-    minZoom: 3,
-    maxBounds: bounds // Sets bounds as max
+    zoom: 9 // starting zoom
 });
 
-var geojson = {
-  type: 'FeatureCollection',
-  features: [{
-    type: 'Feature',
-    geometry: {
-      type: 'Route marker',
-      coordinates: [149.109,-35.423]
-    },
-    properties: {
-      title: 'Route',
-      description: 'Orroral loop'
-    }
-  }]
-};
+map.on('load', function() {
 
+  // Disclaimer here
+/*    var popup = new mapboxgl.Popup({closeOnClick: false})
+        .setLngLat([149.175,-35.421])
+        .setHTML('<h1>Use at your own risk</h1>')
+        .addTo(map);*/
 
-// add markers to map
-geojson.features.forEach(function(marker) {
-
-  // create a HTML element for each feature
-  var el = document.createElement('div');
-  el.className = 'marker';
-
-  // make a marker for each feature and add to the map
-  new mapboxgl.Marker(el)
-    .setLngLat(marker.geometry.coordinates)
-    .setPopup(new mapboxgl.Popup({ offset: 25 }) // add popups
-    .setHTML('<h3>' + marker.properties.title + '</h3><p>' + marker.properties.description + '</p>'))
-    .addTo(map);
+    map.on('mousemove', function(e) {
+        var features = map.queryRenderedFeatures(e.point, {filter: ["==", "displayOnMap", "yes"]})
+		if (!features.length) {
+			map.getCanvas().style.cursor = '';
+			return;
+		}
+		map.getCanvas().style.cursor = 'crosshair';
+//		document.getElementById('features').innerHTML = JSON.stringify(features, null, 2);
+		document.getElementById('features').innerHTML = 
+			'Title: ' + JSON.stringify(features[0].properties.title) + '<br />' +
+//			JSON.stringify(features[0].properties.iconText) + '<br />' +
+			'Description: ' + JSON.stringify(features[0].properties.description) + '<br />';
+//			JSON.stringify(e.lngLat);
+	});
 });
-
-
 </script>
 
 </body>
