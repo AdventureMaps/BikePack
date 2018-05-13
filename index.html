@@ -35,12 +35,18 @@
 <pre id='features'></pre>
 <script>
 mapboxgl.accessToken = 'pk.eyJ1IjoibG9uZ3NraW5uZXlsaW5lIiwiYSI6ImFxT19ENXcifQ.aLQ5J2zNOxr_oVaIOrxeow';
-var map = new mapboxgl.Map(
-{
+
+var bounds = [
+    [148.142, -36.603], // Southwest coordinates
+    [151.053, -34.575]  // Northeast coordinates
+];
+
+var map = new mapboxgl.Map({
     container: 'map', // container id
     style: 'mapbox://styles/longskinneyline/cjg6egl6k0hp42sqv7z01vam2', // stylesheet location
     center: [149.175,-35.421], // starting position [lng, lat]
-    zoom: 9 // starting zoom
+    zoom: 9, // starting zoom
+	maxBounds: bounds // Sets bounds as max
 });
 
 map.on('load', function() {
